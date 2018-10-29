@@ -1,5 +1,6 @@
-from teste import Teste
+from individuo import Individuo
 
-teste = Teste()
 
-print(teste.getPosition())
+ind1 = Individuo()
+
+print(ind1.getCombinacao())
