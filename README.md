@@ -1,0 +1,1 @@
+"# trabalho2ComputacaoEvolucionaria"  git init git add README.md git commit -m "first commit" git remote add origin https://github.com/JordannAlmeida/trabalho2ComputacaoEvolucionaria.git git push -u origin master
