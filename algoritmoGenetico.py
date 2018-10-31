@@ -114,25 +114,33 @@ class AlgoritmoGenetico:
             filhos=[filho1,filho2]
         return filhos
 
-    #Recebe um Individuo (filho)
+    #Recebe um Individuo (filho) e um double (taxaMutacao)
     #retorna um Individuo (filho)
-    def mutacaoBitABit(filho):
-        bit=random.randint(0,len(filho)-1)
+    def mutacaoBitABit(filho,taxaMutacao):
+        i=0
         combinacaoFilho=filho.getCombinacao()
-        if combinacaoFilho[bit]==0:
-            combinacaoFilho[bit]=1
-        if combinacaoFilho[bit]==1:
-            combinacaoFilho[bit]=0
+        while (i<len(combinacaoFilho)-1)
+            r=random.uniform(0,100)
+            if r<taxaMutacao:        
+                if combinacaoFilho[i]==0:
+                    combinacaoFilho[i]=1
+                if combinacaoFilho[i]==1:
+                    combinacaoFilho[i]=0
+            i=i+1
         filho.setCombinacao(combinacaoFilho)
         return filho
 
-    #Recebe um Individuo (filho)
+    #Recebe um Individuo (filho) e um double (taxaMutacao)
     #retorna um Individuo (filho)
-    def mutacaoBitAleatorio(filho):
-        bit=random.randint(0,len(filho)-1)
-        combinacaoFilho=filho.getCombinacao()
-        combinacaoFilho[bit]=random.randint(0,1)
-        filho.setCombinacao(combinacaoFilho)
+    def mutacaoBitAleatorio(filho,taxaMutacao):
+        r=random.uniform(0,100)
+        if r<taxaMutacao:
+            bit=random.randint(0,len(filho)-1)
+            if combinacaoFilho[bit]==0:
+                    combinacaoFilho[bit]=1
+                if combinacaoFilho[bit]==1:
+                    combinacaoFilho[bit]=0
+            filho.setCombinacao(combinacaoFilho)
         return filho
     
     #metodo de execução do algoritimo genetico
