@@ -1,4 +1,7 @@
 import random
+from constantes import Constantes
+from individuo import Individuo
+
 class AlgoritmoGenetico:
     
     #desenvolvido em sala, recebe um vetor com o fitness
@@ -14,7 +17,7 @@ class AlgoritmoGenetico:
         individuo=i
         return individuo
 
-    def selecaoDosPaisRoleta(listaDeAvaliacao)
+    def selecaoDosPaisRoleta(listaDeAvaliacao):
         pai1=giraRoleta(listaDeAvaliacao)
         pai2=giraRoleta(listaDeAvaliacao)
         pais=[pai1,pai2]
@@ -23,7 +26,7 @@ class AlgoritmoGenetico:
     #Conferir esse método (não tenho certeza se é assim que ele funciona)
     #Dar uma olhada em: http://www.inf.ufpr.br/aurora/tutoriais/Ceapostila.pdf
     #página 10 fig. 4
-    def selecaoDosPaisTorneio(listaDeAvaliacao,k)
+    def selecaoDosPaisTorneio(listaDeAvaliacao,k):
         pos1=random.randint(0,len(listaDeAvaliacao))
         pos2=random.randint(0,len(listaDeAvaliacao))
         pai1=listaDeAvaliacao[pos1]
@@ -44,7 +47,7 @@ class AlgoritmoGenetico:
 
     #Recebe um vetor de Individuos (pais) e um int
     #retorna um vetor de Individuos (filhos)
-    def cruzamentoUmPonto(pais,txCruzamento)
+    def cruzamentoUmPonto(pais,txCruzamento):
         pai1=pais[1]
         pai2=pais[2]
         combinacaoPai1=pai1.getCombinacao()
@@ -70,7 +73,6 @@ class AlgoritmoGenetico:
     #Recebe um vetor de Individuos (pais) e um int
     #retorna um vetor de Individuos (filhos)
     def cruzamentoUniforme(pais,txCruzamento):
-
         #declaração dos pais e filhos
         pai1=pais[1]
         pai2=pais[2]
@@ -100,17 +102,17 @@ class AlgoritmoGenetico:
             combinacaoFilho2=[]
             
             while i<tam1:
-                if aux[i]=0:
+                if aux[i]==0:
                     aux1[i]=combinacaoPai1[i]
                     aux2[i]=combinacaoPai2[i]
-                if aux[i]=1:
+                if aux[i]==1:
                     aux1[i]=combinacaoPai2[i]
                     aux2[i]=combinacaoPai1[i]
                 i=i+1
             filho1.setCombinacao(combinacaoFilho1)
             filho2.setCombinacao(combinacaoFilho2)
             filhos=[filho1,filho2]
-     return filhos
+        return filhos
 
     #Recebe um Individuo (filho)
     #retorna um Individuo (filho)
@@ -119,7 +121,7 @@ class AlgoritmoGenetico:
         combinacaoFilho=filho.getCombinacao()
         if combinacaoFilho[bit]==0:
             combinacaoFilho[bit]=1
-         if combinacaoFilho[bit]==1:
+        if combinacaoFilho[bit]==1:
             combinacaoFilho[bit]=0
         filho.setCombinacao(combinacaoFilho)
         return filho
@@ -132,4 +134,11 @@ class AlgoritmoGenetico:
         combinacaoFilho[bit]=random.randint(0,1)
         filho.setCombinacao(combinacaoFilho)
         return filho
-        
+    
+    #metodo de execução do algoritimo genetico
+    def iniciarOtimizacao(self, hasMapEscolhasUsuario):
+        numeroIndividuos = int(hasMapEscolhasUsuario[Constantes.numeroIndividuos])
+        populacao = [Individuo() for i in range(0, numeroIndividuos)]
+        #for i in range(0, int(hasMapEscolhasUsuario[Constantes.numeroGeracao])):
+            #TODO: Executar algoritmo
+        print("FIM!\n")
