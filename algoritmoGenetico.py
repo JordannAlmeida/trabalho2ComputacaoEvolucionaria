@@ -4,14 +4,13 @@ from individuo import Individuo
 from metricasPopulacao import MetricasPopulacao
 
 class AlgoritmoGenetico:
-    
-    melhorIndividuo = None
-    elite = None
-    mediaPopulacao = None
-    piorIndividuo = None
-    desvioPadrao = None
-    listMelhoresFitness = []
-    listPioresFitness = []
+
+    def __init__(self):
+       self.melhorIndividuo = None
+       self.elite = None
+       self.piorIndividuo = None
+       self.listMelhoresFitness = []
+       self.listPioresFitness = [] 
 
     def getMelhorIndividuo(self):
         return self.melhorIndividuo
@@ -63,8 +62,8 @@ class AlgoritmoGenetico:
     #Dar uma olhada em: http://www.inf.ufpr.br/aurora/tutoriais/Ceapostila.pdf
     #página 10 fig. 4
     def selecaoDosPaisTorneio(self, listaDeAvaliacao,k):
-        pos1=random.randint(0,len(listaDeAvaliacao))
-        pos2=random.randint(0,len(listaDeAvaliacao))
+        pos1=random.randint(0,len(listaDeAvaliacao)-1)
+        pos2=random.randint(0,len(listaDeAvaliacao)-1)
         pai1=listaDeAvaliacao[pos1]
         pai2=listaDeAvaliacao[pos2]     
         r=random.uniform(0,1)
@@ -170,8 +169,9 @@ class AlgoritmoGenetico:
     #retorna um Individuo (filho)
     def mutacaoBitAleatorio(self, filho, taxaMutacao):
         r=random.uniform(0,100)
+        combinacaoFilho=filho.getCombinacao()
         if r<taxaMutacao:
-            bit=random.randint(0,len(filho)-1)
+            bit=random.randint(0,len(filho.getCombinacao())-1)
             if combinacaoFilho[bit]==0:
                 combinacaoFilho[bit]=1
             if combinacaoFilho[bit]==1:
@@ -183,6 +183,8 @@ class AlgoritmoGenetico:
     def iniciarOtimizacao(self, hasMapEscolhasUsuario):
         numeroIndividuos = int(hasMapEscolhasUsuario[Constantes.numeroIndividuos])
         populacao = [Individuo() for i in range(0, numeroIndividuos)]
+        self.melhorIndividuo = MetricasPopulacao.melhorIndividuoPopulacao(populacao)
+        self.piorIndividuo = MetricasPopulacao.piorIndividuoPopulacao(populacao)
         filhos = [1,2]
         positionPais = []
         for i in range(0, int(hasMapEscolhasUsuario[Constantes.numeroGeracao])):
@@ -193,7 +195,8 @@ class AlgoritmoGenetico:
             if(hasMapEscolhasUsuario[Constantes.tipoSelecao] == "r"):
                 positionPais = self.selecaoDosPaisRoleta(listaFitness)
             else:
-                positionPais = self.selecaoDosPaisTorneio(listaFitness, 0.75)
+                positionPais.append(self.selecaoDosPaisTorneio(listaFitness, 0.75))
+                positionPais.append(self.selecaoDosPaisTorneio(listaFitness, 0.75))
             
             pais = [populacao[positionPais[0]], populacao[positionPais[1]]]
             
@@ -216,23 +219,27 @@ class AlgoritmoGenetico:
             
             #Verifica se tem Elitismo:
             if hasMapEscolhasUsuario[Constantes.temElitismo] == "s":
-                elite=self.getMelhorIndividuo()
-                if filhos[0].getFitness()>elite.getFitness():
-                    populacao[pais[0].getRank()] = filhos[0]
-                    populacao[pais[1].getRank()] = filhos[1]
-                if filhos[1].getFitness()>elite.getFitness():
-                    populacao[pais[0].getRank()] = filhos[0]
-                    populacao[pais[1].getRank()] = filhos[1]
-
-
+                elite = MetricasPopulacao.melhorIndividuoPopulacao(populacao)
+                #TODO: AJUSTARRR
+                if elite.getRank() != 1:
+                    populacao[elite.getRank()-1], populacao[0] = populacao[0], populacao[elite.getRank()-1]
+                    elite = populacao[0]
+                    print("EPAAAAAAAAAAAA!!!!!!!!!!!!!!!!!!!!!!!!!!\n")
+                    print(elite.getRank())
+                    print("\n")
+                position = random.randint(1, numeroIndividuos-1)
+                if filhos[0].getFitness() > elite.getFitness():
+                    populacao[position] = filhos[0]
+                if filhos[1].getFitness() > elite.getFitness():
+                    populacao[position] = filhos[1]
             else:
-                populacao[pais[0].getRank()] = filhos[0]
-                populacao[pais[1].getRank()] = filhos[1]
+                position1 = random.randint(0, numeroIndividuos-1)
+                position2 = random.randint(0, numeroIndividuos-1)
+                populacao[position1] = filhos[0]
+                populacao[position2] = filhos[1]
 
             #metricas
             self.melhorIndividuo = MetricasPopulacao.melhorIndividuoPopulacao(populacao)
             self.piorIndividuo = MetricasPopulacao.piorIndividuoPopulacao(populacao)
-            self.mediaPopulacao = MetricasPopulacao.mediaFitnessPopulacao(populacao)
-            self.desvioPadrao = MetricasPopulacao.desvioPadraoFitnessPopulacao(populacao)
             self.listMelhoresFitness.append(self.melhorIndividuo.getFitness())
             self.listPioresFitness.append(self.piorIndividuo.getFitness())

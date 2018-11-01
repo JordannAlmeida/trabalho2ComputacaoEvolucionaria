@@ -3,7 +3,7 @@ import matplotlib.pyplot as pl
 class PlotaGrafico:
     
     @staticmethod
-    def plotarGrafico2d(eixoX, eixoY, labelX = "epocas", labelY = "Valor na Função Custo"):
+    def plotarGrafico2d(eixoX, eixoY, labelX = "Epocas", labelY = "Fitness"):
         pl.axis(PlotaGrafico.defineAxisRange(eixoX, eixoY))
         pl.xlabel(labelX)
         pl.ylabel(labelY)

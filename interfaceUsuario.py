@@ -54,22 +54,23 @@ class InterfaceUsuario:
         sucesso=0
         melhor=[]
         pior=[]
-        media=[]
-        desvio=[]
+        resultados=[]
+        media=None
+        desvio=None
 
         melhores=[]
-        for i in range (100):
+        for i in range (1):
             ag = AlgoritmoGenetico()
             ag.iniciarOtimizacao(hasMapEscolhasUsuario)
             melhor.append(max(ag.getListaMelhoresFitness())) 
-            melhores.append(ag.getListaMelhoresFitness()[i])
-            pior.append(max(ag.getListaPioresFitness())) 
-            media.append(ag.getMediaPopulacao()) 
-            desvio.append(ag.getDesvioPadrao()) 
+            pior.append(max(ag.getListaPioresFitness()))
+            resultados.append(ag.getMelhorIndividuo().getFitness())
             if max(ag.getListaMelhoresFitness())==27:
                 sucesso=sucesso+1
+            PlotaGrafico.plotarGrafico2d(numpy.arange(0, 1000, 1), ag.getListaMelhoresFitness(), "Execuções")
         
-
+        media = numpy.mean(resultados)
+        desvio = numpy.std(resultados)
         print(media)
         print("\n")
         print(desvio)
@@ -80,6 +81,4 @@ class InterfaceUsuario:
         print("\n")
         print(sucesso)
         print("\n")
-        print(melhores)
-        print("\n")
-        #PlotaGrafico.plotarGrafico2d(numpy.arange(0, 100, 1), melhor)
+        #PlotaGrafico.plotarGrafico2d(numpy.arange(0, 100, 1), melhor, "Execuções")
