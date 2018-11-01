@@ -1,5 +1,6 @@
 from constantes import Constantes
 from algoritmoGenetico import AlgoritmoGenetico
+from plotaGrafico import PlotaGrafico
 
 class InterfaceUsuario:
 
@@ -51,3 +52,4 @@ class InterfaceUsuario:
     def inicializarOtimizacao(hasMapEscolhasUsuario):
         ag = AlgoritmoGenetico()
         ag.iniciarOtimizacao(hasMapEscolhasUsuario)
+        PlotaGrafico.plotarGrafico2d(hasMapEscolhasUsuario[Constantes.numeroGeracao], ag.getListaMelhoresFitness())

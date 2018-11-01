@@ -2,11 +2,6 @@ from individuo import Individuo
 from plotaGrafico import PlotaGrafico
 from interfaceUsuario import InterfaceUsuario
 
+#InterfaceUsuario.inputsUsuario()
 
-ind1 = Individuo()
-
-print(ind1.getCombinacao())
-
-#PlotaGrafico.plotarGrafico2d([0, 1, 2], [0, 2, 4])
-
-InterfaceUsuario.inputsUsuario()
+InterfaceUsuario.inputsUsuarioComParametros("p", "n", "r", "b", 2.5, 80, 30, 50)

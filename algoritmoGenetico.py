@@ -1,12 +1,35 @@
 import random
 from constantes import Constantes
 from individuo import Individuo
+from metricasPopulacao import MetricasPopulacao
 
 class AlgoritmoGenetico:
     
+    melhorIndividuo = None
+    mediaPopulacao = None
+    piorIndividuo = None
+    desvioPadrao = None
+    listMelhoresFitness = []
+
+    def getMelhorIndividuo(self):
+        return self.melhorIndividuo
+    
+    def getPiorIndividuo(self):
+        return self.piorIndividuo
+
+    def getMediaPopulacao(self):
+        return self.getMediaPopulacao
+    
+    def getDesvioPadrao(self):
+        return self.desvioPadrao
+    
+    def getListaMelhoresFitness(self):
+        return self.listMelhoresFitness
+
+
     #desenvolvido em sala, recebe um vetor com o fitness
     #retorna o índice dos pais nessa lista
-    def giraRoleta(listaDeAvaliacao):
+    def giraRoleta(self, listaDeAvaliacao):
         soma=sum(listaDeAvaliacao,0)
         s=random.randint(0,soma)
         i=1
@@ -17,16 +40,16 @@ class AlgoritmoGenetico:
         individuo=i
         return individuo
 
-    def selecaoDosPaisRoleta(listaDeAvaliacao):
-        pai1=giraRoleta(listaDeAvaliacao)
-        pai2=giraRoleta(listaDeAvaliacao)
+    def selecaoDosPaisRoleta(self, listaDeAvaliacao):
+        pai1=self.giraRoleta(listaDeAvaliacao)
+        pai2=self.giraRoleta(listaDeAvaliacao)
         pais=[pai1,pai2]
         return pais
 
     #Conferir esse método (não tenho certeza se é assim que ele funciona)
     #Dar uma olhada em: http://www.inf.ufpr.br/aurora/tutoriais/Ceapostila.pdf
     #página 10 fig. 4
-    def selecaoDosPaisTorneio(listaDeAvaliacao,k):
+    def selecaoDosPaisTorneio(self, listaDeAvaliacao,k):
         pos1=random.randint(0,len(listaDeAvaliacao))
         pos2=random.randint(0,len(listaDeAvaliacao))
         pai1=listaDeAvaliacao[pos1]
@@ -47,13 +70,13 @@ class AlgoritmoGenetico:
 
     #Recebe um vetor de Individuos (pais) e um int
     #retorna um vetor de Individuos (filhos)
-    def cruzamentoUmPonto(pais,txCruzamento):
-        pai1=pais[1]
-        pai2=pais[2]
+    def cruzamentoUmPonto(self, pais,txCruzamento):
+        pai1=pais[0]
+        pai2=pais[1]
         combinacaoPai1=pai1.getCombinacao()
         combinacaoPai2=pai2.getCombinacao()
-        tam1=len(pai1)
-        tam2=len(pai2)
+        tam1=len(combinacaoPai1)
+        tam2=len(combinacaoPai2)
         filhos=[]
         if tam1!=tam2:
             filhos="impossível, tamanho diferente"
@@ -63,8 +86,8 @@ class AlgoritmoGenetico:
             filho1=Individuo()
             filho2=Individuo()
             crossOver=random.randint(1,(tam1-2))
-            combinacaoFilho1=combinacaoPai1[0:crossOver]+combinacaoPai2[crossOver:tam2]
-            combinacaoFilho2=combinacaoPai2[0:crossOver]+combinacaoPai1[crossOver:tam1]
+            combinacaoFilho1=combinacaoPai1[:crossOver]+combinacaoPai2[crossOver:tam2]
+            combinacaoFilho2=combinacaoPai2[:crossOver]+combinacaoPai1[crossOver:tam1]
             filho1.setCombinacao(combinacaoFilho1)
             filho2.setCombinacao(combinacaoFilho2)
             filhos=[filho1,filho2]
@@ -72,10 +95,10 @@ class AlgoritmoGenetico:
 
     #Recebe um vetor de Individuos (pais) e um int
     #retorna um vetor de Individuos (filhos)
-    def cruzamentoUniforme(pais,txCruzamento):
+    def cruzamentoUniforme(self, pais,txCruzamento):
         #declaração dos pais e filhos
-        pai1=pais[1]
-        pai2=pais[2]
+        pai1=pais[0]
+        pai2=pais[1]
         combinacaoPai1=pai1.getCombinacao()
         combinacaoPai2=pai2.getCombinacao()
         tam1=len(combinacaoPai1)
@@ -116,10 +139,10 @@ class AlgoritmoGenetico:
 
     #Recebe um Individuo (filho) e um double (taxaMutacao)
     #retorna um Individuo (filho)
-    def mutacaoBitABit(filho,taxaMutacao):
+    def mutacaoBitABit(self, filho,taxaMutacao):
         i=0
         combinacaoFilho=filho.getCombinacao()
-        while (i<len(combinacaoFilho)-1)
+        while (i<len(combinacaoFilho)-1):
             r=random.uniform(0,100)
             if r<taxaMutacao:        
                 if combinacaoFilho[i]==0:
@@ -132,14 +155,14 @@ class AlgoritmoGenetico:
 
     #Recebe um Individuo (filho) e um double (taxaMutacao)
     #retorna um Individuo (filho)
-    def mutacaoBitAleatorio(filho,taxaMutacao):
+    def mutacaoBitAleatorio(self, filho, taxaMutacao):
         r=random.uniform(0,100)
         if r<taxaMutacao:
             bit=random.randint(0,len(filho)-1)
             if combinacaoFilho[bit]==0:
-                    combinacaoFilho[bit]=1
-                if combinacaoFilho[bit]==1:
-                    combinacaoFilho[bit]=0
+                combinacaoFilho[bit]=1
+            if combinacaoFilho[bit]==1:
+                combinacaoFilho[bit]=0
             filho.setCombinacao(combinacaoFilho)
         return filho
     
@@ -147,6 +170,44 @@ class AlgoritmoGenetico:
     def iniciarOtimizacao(self, hasMapEscolhasUsuario):
         numeroIndividuos = int(hasMapEscolhasUsuario[Constantes.numeroIndividuos])
         populacao = [Individuo() for i in range(0, numeroIndividuos)]
-        #for i in range(0, int(hasMapEscolhasUsuario[Constantes.numeroGeracao])):
-            #TODO: Executar algoritmo
-        print("FIM!\n")
+        for i in range(0, int(hasMapEscolhasUsuario[Constantes.numeroGeracao])):
+            populacao = MetricasPopulacao.rankearPopulacao(populacao)
+            
+            positionPais = []
+            listaFitness = MetricasPopulacao.getListaFitness(populacao)
+            #Verificar metodo de selecao:
+            if(hasMapEscolhasUsuario[Constantes.tipoSelecao] == "r"):
+                positionPais = self.selecaoDosPaisRoleta(listaFitness)
+            else:
+                positionPais = self.selecaoDosPaisTorneio(listaFitness, 0.75)
+            
+            pais = [populacao[positionPais[0]], populacao[positionPais[1]]]
+            filhos = []
+            #Verificar metodo de cruzamento:
+            if(hasMapEscolhasUsuario[Constantes.tipoCruzamento] == "p"):
+                filhos = self.cruzamentoUmPonto(pais, hasMapEscolhasUsuario[Constantes.taxaCruzamento])
+            else:
+                filhos = self.cruzamentoUniforme(pais, hasMapEscolhasUsuario[Constantes.taxaCruzamento])
+            
+            #verifica tipo mutacao:
+            if(hasMapEscolhasUsuario[Constantes.tipoMutacao] == "a"):
+                filhos[0] = self.mutacaoBitAleatorio(filhos[0], hasMapEscolhasUsuario[Constantes.taxaMutacao])
+                filhos[1] = self.mutacaoBitAleatorio(filhos[1], hasMapEscolhasUsuario[Constantes.taxaMutacao])
+            else:
+                filhos[0] = self.mutacaoBitABit(filho[0], hasMapEscolhasUsuario[Constantes.taxaMutacao])
+                filhos[1] = self.mutacaoBitABit(filhos[1], hasMapEscolhasUsuario[Constantes.taxaMutacao])
+            
+            #Verifica se tem Elitismo:
+            if hasMapEscolhasUsuario[Constantes.temElitismo] == "s":
+                #TODO: Elitismo
+                print("depois nois faiz\n")
+            else:
+                populacao[pais[0].getRank()] = filhos[0]
+                populacao[pais[1].getRank()] = filhos[1]
+
+            #metricas
+            self.melhorIndividuo = MetricasPopulacao.melhorIndividuoPopulacao(populacao)
+            self.piorIndividuo = MetricasPopulacao.piorIndividuoPopulacao(populacao)
+            self.mediaPopulacao = MetricasPopulacao.mediaFitnessPopulacao(populacao)
+            self.desvioPadrao = MetricasPopulacao.desvioPadraoFitnessPopulacao(populacao)
+            self.listMelhoresFitness.append(self.melhorIndividuo.getFitness())

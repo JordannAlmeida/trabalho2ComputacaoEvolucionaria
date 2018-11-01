@@ -1,5 +1,7 @@
 import numpy as np
 
+from funcaoCusto import FuncaoCusto
+
 class Individuo:
     combinacao = []
     rank = 0
@@ -7,10 +9,26 @@ class Individuo:
 
     def __init__(self):
         self.gerarCombinacao()
-        self.fitness = -100 #inicializa com valor baixo
+        self.recalcularFitness()
 
     def gerarCombinacao(self):
         self.combinacao = np.random.choice([0, 1], 36)
 
     def getCombinacao(self):
         return self.combinacao
+    
+    def setCombinacao(self, combinacao):
+        self.combinacao = combinacao
+        self.recalcularFitness()
+
+    def getFitness(self):
+        return self.fitness
+
+    def recalcularFitness(self):
+        self.fitness = FuncaoCusto.funcaoPadrao(self)
+    
+    def getRank(self):
+        return self.rank
+
+    def setRank(self, newRank):
+        self.rank = newRank
