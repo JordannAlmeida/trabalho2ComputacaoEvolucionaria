@@ -8,23 +8,23 @@ class MetricasPopulacao:
 
     @staticmethod
     def mediaFitnessPopulacao(populacao):
-        listaFitness = getListaFitness(populacao)
+        listaFitness = MetricasPopulacao.getListaFitness(populacao)
         return np.mean(listaFitness)        
 
     @staticmethod
     def desvioPadraoFitnessPopulacao(populacao):
-        listaFitness = getListaFitness(populacao)
+        listaFitness = MetricasPopulacao.getListaFitness(populacao)
         return np.std(listaFitness)
     
     @staticmethod
     def melhorIndividuoPopulacao(populacao):
-        listaFitness = getListaFitness(populacao)
+        listaFitness = MetricasPopulacao.getListaFitness(populacao)
         index = listaFitness.index(max(listaFitness))
         return populacao[index]
 
     @staticmethod
     def piorIndividuoPopulacao(populacao):
-        listaFitness = getListaFitness(populacao)
+        listaFitness = MetricasPopulacao.getListaFitness(populacao)
         index = listaFitness.index(min(listaFitness))
         return populacao[index]
 

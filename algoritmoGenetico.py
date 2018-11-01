@@ -6,19 +6,32 @@ from metricasPopulacao import MetricasPopulacao
 class AlgoritmoGenetico:
     
     melhorIndividuo = None
+    elite = None
     mediaPopulacao = None
     piorIndividuo = None
     desvioPadrao = None
     listMelhoresFitness = []
+    listPioresFitness = []
 
     def getMelhorIndividuo(self):
         return self.melhorIndividuo
+
+    def getElite(self):
+        return self.elite
+    
+    def setElite(self,melhorIndividuo):
+        elite=melhorIndividuo
+
+    
+    
+    def getListaPioresFitness(self):
+        return self.listPioresFitness
     
     def getPiorIndividuo(self):
         return self.piorIndividuo
 
     def getMediaPopulacao(self):
-        return self.getMediaPopulacao
+        return self.mediaPopulacao
     
     def getDesvioPadrao(self):
         return self.desvioPadrao
@@ -32,7 +45,7 @@ class AlgoritmoGenetico:
     def giraRoleta(self, listaDeAvaliacao):
         soma=sum(listaDeAvaliacao,0)
         s=random.randint(0,soma)
-        i=1
+        i=0
         aux=listaDeAvaliacao[i]
         while aux < s:
             i=i+1
@@ -77,7 +90,7 @@ class AlgoritmoGenetico:
         combinacaoPai2=pai2.getCombinacao()
         tam1=len(combinacaoPai1)
         tam2=len(combinacaoPai2)
-        filhos=[]
+        filhos=pais
         if tam1!=tam2:
             filhos="impossível, tamanho diferente"
         if tam1==tam2:
@@ -86,8 +99,8 @@ class AlgoritmoGenetico:
             filho1=Individuo()
             filho2=Individuo()
             crossOver=random.randint(1,(tam1-2))
-            combinacaoFilho1=combinacaoPai1[:crossOver]+combinacaoPai2[crossOver:tam2]
-            combinacaoFilho2=combinacaoPai2[:crossOver]+combinacaoPai1[crossOver:tam1]
+            combinacaoFilho1=[*combinacaoPai1[:crossOver],*combinacaoPai2[crossOver:tam2]]
+            combinacaoFilho2=[*combinacaoPai2[:crossOver],*combinacaoPai1[crossOver:tam1]]
             filho1.setCombinacao(combinacaoFilho1)
             filho2.setCombinacao(combinacaoFilho2)
             filhos=[filho1,filho2]
@@ -103,13 +116,13 @@ class AlgoritmoGenetico:
         combinacaoPai2=pai2.getCombinacao()
         tam1=len(combinacaoPai1)
         tam2=len(combinacaoPai2)
-        filhos=[]
+        filhos=pais
         i=0
         aux=[]
 
         #sorteio dos genes
         while i<tam1:
-            aux[i]=random.randint(0,1)
+            aux.append(random.randint(0,1))
             i=i+1 
 
         #geração dos filhos, com base nos genes sorteados
@@ -126,11 +139,11 @@ class AlgoritmoGenetico:
             
             while i<tam1:
                 if aux[i]==0:
-                    aux1[i]=combinacaoPai1[i]
-                    aux2[i]=combinacaoPai2[i]
+                    combinacaoFilho1.append(combinacaoPai1[i])
+                    combinacaoFilho2.append(combinacaoPai2[i])
                 if aux[i]==1:
-                    aux1[i]=combinacaoPai2[i]
-                    aux2[i]=combinacaoPai1[i]
+                    combinacaoFilho1.append(combinacaoPai2[i])
+                    combinacaoFilho2.append(combinacaoPai1[i])
                 i=i+1
             filho1.setCombinacao(combinacaoFilho1)
             filho2.setCombinacao(combinacaoFilho2)
@@ -170,10 +183,11 @@ class AlgoritmoGenetico:
     def iniciarOtimizacao(self, hasMapEscolhasUsuario):
         numeroIndividuos = int(hasMapEscolhasUsuario[Constantes.numeroIndividuos])
         populacao = [Individuo() for i in range(0, numeroIndividuos)]
+        filhos = [1,2]
+        positionPais = []
         for i in range(0, int(hasMapEscolhasUsuario[Constantes.numeroGeracao])):
             populacao = MetricasPopulacao.rankearPopulacao(populacao)
             
-            positionPais = []
             listaFitness = MetricasPopulacao.getListaFitness(populacao)
             #Verificar metodo de selecao:
             if(hasMapEscolhasUsuario[Constantes.tipoSelecao] == "r"):
@@ -182,7 +196,9 @@ class AlgoritmoGenetico:
                 positionPais = self.selecaoDosPaisTorneio(listaFitness, 0.75)
             
             pais = [populacao[positionPais[0]], populacao[positionPais[1]]]
-            filhos = []
+            
+            
+
             #Verificar metodo de cruzamento:
             if(hasMapEscolhasUsuario[Constantes.tipoCruzamento] == "p"):
                 filhos = self.cruzamentoUmPonto(pais, hasMapEscolhasUsuario[Constantes.taxaCruzamento])
@@ -190,17 +206,25 @@ class AlgoritmoGenetico:
                 filhos = self.cruzamentoUniforme(pais, hasMapEscolhasUsuario[Constantes.taxaCruzamento])
             
             #verifica tipo mutacao:
+            
             if(hasMapEscolhasUsuario[Constantes.tipoMutacao] == "a"):
                 filhos[0] = self.mutacaoBitAleatorio(filhos[0], hasMapEscolhasUsuario[Constantes.taxaMutacao])
                 filhos[1] = self.mutacaoBitAleatorio(filhos[1], hasMapEscolhasUsuario[Constantes.taxaMutacao])
             else:
-                filhos[0] = self.mutacaoBitABit(filho[0], hasMapEscolhasUsuario[Constantes.taxaMutacao])
+                filhos[0] = self.mutacaoBitABit(filhos[0], hasMapEscolhasUsuario[Constantes.taxaMutacao])
                 filhos[1] = self.mutacaoBitABit(filhos[1], hasMapEscolhasUsuario[Constantes.taxaMutacao])
             
             #Verifica se tem Elitismo:
             if hasMapEscolhasUsuario[Constantes.temElitismo] == "s":
-                #TODO: Elitismo
-                print("depois nois faiz\n")
+                elite=self.getMelhorIndividuo()
+                if filhos[0].getFitness()>elite.getFitness():
+                    populacao[pais[0].getRank()] = filhos[0]
+                    populacao[pais[1].getRank()] = filhos[1]
+                if filhos[1].getFitness()>elite.getFitness():
+                    populacao[pais[0].getRank()] = filhos[0]
+                    populacao[pais[1].getRank()] = filhos[1]
+
+
             else:
                 populacao[pais[0].getRank()] = filhos[0]
                 populacao[pais[1].getRank()] = filhos[1]
@@ -211,3 +235,4 @@ class AlgoritmoGenetico:
             self.mediaPopulacao = MetricasPopulacao.mediaFitnessPopulacao(populacao)
             self.desvioPadrao = MetricasPopulacao.desvioPadraoFitnessPopulacao(populacao)
             self.listMelhoresFitness.append(self.melhorIndividuo.getFitness())
+            self.listPioresFitness.append(self.piorIndividuo.getFitness())

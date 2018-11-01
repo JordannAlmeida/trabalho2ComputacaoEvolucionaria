@@ -1,6 +1,7 @@
 from constantes import Constantes
 from algoritmoGenetico import AlgoritmoGenetico
 from plotaGrafico import PlotaGrafico
+import numpy
 
 class InterfaceUsuario:
 
@@ -50,6 +51,35 @@ class InterfaceUsuario:
 
     @staticmethod
     def inicializarOtimizacao(hasMapEscolhasUsuario):
-        ag = AlgoritmoGenetico()
-        ag.iniciarOtimizacao(hasMapEscolhasUsuario)
-        PlotaGrafico.plotarGrafico2d(hasMapEscolhasUsuario[Constantes.numeroGeracao], ag.getListaMelhoresFitness())
+        sucesso=0
+        melhor=[]
+        pior=[]
+        media=[]
+        desvio=[]
+
+        melhores=[]
+        for i in range (100):
+            ag = AlgoritmoGenetico()
+            ag.iniciarOtimizacao(hasMapEscolhasUsuario)
+            melhor.append(max(ag.getListaMelhoresFitness())) 
+            melhores.append(ag.getListaMelhoresFitness()[i])
+            pior.append(max(ag.getListaPioresFitness())) 
+            media.append(ag.getMediaPopulacao()) 
+            desvio.append(ag.getDesvioPadrao()) 
+            if max(ag.getListaMelhoresFitness())==27:
+                sucesso=sucesso+1
+        
+
+        print(media)
+        print("\n")
+        print(desvio)
+        print("\n")
+        print(melhor)
+        print("\n")
+        print(pior)
+        print("\n")
+        print(sucesso)
+        print("\n")
+        print(melhores)
+        print("\n")
+        #PlotaGrafico.plotarGrafico2d(numpy.arange(0, 100, 1), melhor)
