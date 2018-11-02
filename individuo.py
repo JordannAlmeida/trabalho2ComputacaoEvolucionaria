@@ -3,13 +3,12 @@ import numpy as np
 from funcaoCusto import FuncaoCusto
 
 class Individuo:
-    combinacao = []
-    rank = 0
-    fitness = 0
+    
 
     def __init__(self):
         self.gerarCombinacao()
         self.recalcularFitness()
+        self.rank = 0
 
     def gerarCombinacao(self):
         self.combinacao = np.random.choice([0, 1], 36)
