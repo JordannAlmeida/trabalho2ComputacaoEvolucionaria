@@ -1,7 +1,5 @@
 from constantes import Constantes
-from algoritmoGenetico import AlgoritmoGenetico
-from plotaGrafico import PlotaGrafico
-import numpy
+from controlador import Controlador
 
 class InterfaceUsuario:
 
@@ -15,7 +13,9 @@ class InterfaceUsuario:
         qProbabilidaMutacao = ["Qual a probabilidade de mutacao? (0 a 100) \n", Constantes.taxaMutacao]
         qNumeroDeIndividuos = ["Qual o numero de individuos? (somente número inteiro) \n", Constantes.numeroIndividuos]
         qNumeroGeracao = ["Qual o numero de gerações? (somente número inteiro) \n", Constantes.numeroGeracao]
-        
+        qEnsaio = ["Qual o numero do ensaio ?", Constantes.ensaio]
+        qNumeroExecucao["Quantas execuções ?", Constantes.numeroExecucao]
+
         rTipoCruzamento = input(qTipoCruzamento[0])
         rUtilizaElitismo = input(qUtilizaElitsmo[0])
         rSelecaoRoletaOuTorneio = input(qSelecaoRoletaOuTorneio[0])
@@ -24,6 +24,8 @@ class InterfaceUsuario:
         rProbabilidadeCruzamento = input(qProbabilidaCruzamento[0])
         rNumeroIndividuos = input(qNumeroDeIndividuos[0])
         rNumeroGeracao = input(qNumeroGeracao[0])
+        rEnsaio = input(qEnsaio)
+        rNumeroExecucao = input(qNumeroExecucao)
 
         HasMapEscolhasUsuario = { qTipoCruzamento[1]: rTipoCruzamento,
                                   qUtilizaElitsmo[1]: rUtilizaElitismo,
@@ -32,12 +34,14 @@ class InterfaceUsuario:
                                   qProbabilidaCruzamento[1]: rProbabilidadeCruzamento,
                                   qProbabilidaMutacao[1]: rProbabilidadeMutacao,
                                   qNumeroDeIndividuos[1]: rNumeroIndividuos,
-                                  qNumeroGeracao[1]: rNumeroGeracao
+                                  qNumeroGeracao[1]: rNumeroGeracao,
+                                  qEnsaio[1]: rEnsaio,
+                                  qNumeroExecucao[1]: rNumeroExecucao
         }
-        InterfaceUsuario.inicializarOtimizacao(HasMapEscolhasUsuario)
+        Controlador.inicializarOtimizacao(HasMapEscolhasUsuario)
     
     @staticmethod
-    def inputsUsuarioComParametros(rTipoCruzamento, rUtilizaElitismo, rSelecaoRoletaOuTorneio, rTipoMutacao, rProbabilidadeMutacao, rProbabilidadeCruzamento, rNumeroIndividuos, rNumeroGeracao):
+    def inputsUsuarioComParametros(rTipoCruzamento, rUtilizaElitismo, rSelecaoRoletaOuTorneio, rTipoMutacao, rProbabilidadeMutacao, rProbabilidadeCruzamento, rNumeroIndividuos, rNumeroGeracao, rEnsaio, rNumeroExecucao=100):
         HasMapEscolhasUsuario = { Constantes.tipoCruzamento: rTipoCruzamento,
                                   Constantes.temElitismo: rUtilizaElitismo,
                                   Constantes.tipoSelecao: rSelecaoRoletaOuTorneio,
@@ -45,40 +49,9 @@ class InterfaceUsuario:
                                   Constantes.taxaCruzamento: rProbabilidadeCruzamento,
                                   Constantes.taxaMutacao: rProbabilidadeMutacao,
                                   Constantes.numeroIndividuos: rNumeroIndividuos,
-                                  Constantes.numeroGeracao: rNumeroGeracao
+                                  Constantes.numeroGeracao: rNumeroGeracao,
+                                  Constantes.ensaio: rEnsaio,
+                                  Constantes.numeroExecucao: rNumeroExecucao
+
         }
-        InterfaceUsuario.inicializarOtimizacao(HasMapEscolhasUsuario)
-
-    @staticmethod
-    def inicializarOtimizacao(hasMapEscolhasUsuario):
-        sucesso=0
-        melhor=[]
-        pior=[]
-        resultados=[]
-        media=None
-        desvio=None
-
-        melhores=[]
-        for i in range (100):
-            ag = AlgoritmoGenetico()
-            ag.iniciarOtimizacao(hasMapEscolhasUsuario)
-            melhor.append(max(ag.getListaMelhoresFitness())) 
-            pior.append(max(ag.getListaPioresFitness()))
-            resultados.append(ag.getMelhorIndividuo().getFitness())
-            if max(ag.getListaMelhoresFitness())==27:
-                sucesso=sucesso+1
-            # PlotaGrafico.plotarGrafico2d(numpy.arange(0, 50, 1), ag.getListaMelhoresFitness(), "Execuções")
-        
-        media = numpy.mean(resultados)
-        desvio = numpy.std(resultados)
-        print(media)
-        print("\n")
-        print(desvio)
-        print("\n")
-        print(melhor)
-        print("\n")
-        print(pior)
-        print("\n")
-        print(sucesso)
-        print("\n")
-        PlotaGrafico.plotarGrafico2d(numpy.arange(0, 100, 1), melhor, "Execuções")
+        Controlador.inicializarOtimizacao(HasMapEscolhasUsuario)

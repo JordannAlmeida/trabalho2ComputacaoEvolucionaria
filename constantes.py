@@ -7,3 +7,5 @@ class Constantes:
     taxaMutacao = "TAXA_MUTACAO"
     numeroIndividuos = "N_INDIVIDUOS"
     numeroGeracao = "N_GERACAO"
+    ensaio= "N_ENSAIO"
+    numeroExecucao = "N_EXECUCAO"

@@ -40,14 +40,15 @@ class AlgoritmoGenetico:
 
 
     #desenvolvido em sala, recebe um vetor com o fitness
+    #A lista de avaliacoes deve estar em ordem crescente
     #retorna o índice dos pais nessa lista
     def giraRoleta(self, listaDeAvaliacao):
         soma=sum(listaDeAvaliacao,0)
         s=random.randint(0,soma)
-        i=0
+        i=len(listaDeAvaliacao) -1
         aux=listaDeAvaliacao[i]
         while aux < s:
-            i=i+1
+            i=i-1
             aux=aux+listaDeAvaliacao[i]
         individuo=i
         return individuo
@@ -143,7 +144,7 @@ class AlgoritmoGenetico:
             if r<taxaMutacao:        
                 if combinacaoFilho[i]==0:
                     combinacaoFilho[i]=1
-                if combinacaoFilho[i]==1:
+                elif combinacaoFilho[i]==1:
                     combinacaoFilho[i]=0
             i=i+1
         filho.setCombinacao(combinacaoFilho)
@@ -158,7 +159,7 @@ class AlgoritmoGenetico:
             bit=random.randint(0,len(filho.getCombinacao())-1)
             if combinacaoFilho[bit]==0:
                 combinacaoFilho[bit]=1
-            if combinacaoFilho[bit]==1:
+            elif combinacaoFilho[bit]==1:
                 combinacaoFilho[bit]=0
             filho.setCombinacao(combinacaoFilho)
         return filho
@@ -170,13 +171,17 @@ class AlgoritmoGenetico:
         self.melhorIndividuo = MetricasPopulacao.melhorIndividuoPopulacao(populacao)
         self.piorIndividuo = MetricasPopulacao.piorIndividuoPopulacao(populacao)
         filhos = [1,2]
-        newPopulacao=[]
         positionPais = []
         for i in range(0, int(hasMapEscolhasUsuario[Constantes.numeroGeracao])):
             populacao = MetricasPopulacao.rankearPopulacao(populacao)
             
             listaFitness = MetricasPopulacao.getListaFitness(populacao)
-            j=0
+
+            newPopulacao=[]
+            if (hasMapEscolhasUsuario[Constantes.temElitismo] == "s"):
+                j=2
+            else:
+                j=0
 
             while j < (numeroIndividuos/2):
                 #Verificar metodo de selecao:
@@ -204,19 +209,12 @@ class AlgoritmoGenetico:
                     filhos[0] = self.mutacaoBitABit(filhos[0], hasMapEscolhasUsuario[Constantes.taxaMutacao])
                     filhos[1] = self.mutacaoBitABit(filhos[1], hasMapEscolhasUsuario[Constantes.taxaMutacao])
             
-                #Verifica se tem Elitismo:
-                if hasMapEscolhasUsuario[Constantes.temElitismo] == "s":
-                    #TODO:
-                    position = random.randint(1, numeroIndividuos-1)
-                    if filhos[0].getFitness() > elite.getFitness():
-                        populacao[position] = filhos[0]
-                    if filhos[1].getFitness() > elite.getFitness():
-                        populacao[position] = filhos[1]
-                else:
-                    newPopulacao.append(filhos[0])
-                    newPopulacao.append(filhos[1])
+                
+                newPopulacao.append(filhos[0])
+                newPopulacao.append(filhos[1])
                 j=j+1
-            populacao=newPopulacao
+            
+            populacao = newPopulacao if hasMapEscolhasUsuario[Constantes.temElitismo] == "n" else [*populacao[:1], *newPopulacao] 
                 
     # def atualizarPopulacao(self, filhos):
     #     newPopulacao=filhos
