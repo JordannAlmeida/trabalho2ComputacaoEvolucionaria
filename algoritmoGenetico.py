@@ -184,6 +184,7 @@ class AlgoritmoGenetico:
                 j=0
 
             while j < (numeroIndividuos/2):
+                positionPais = []
                 #Verificar metodo de selecao:
                 if(hasMapEscolhasUsuario[Constantes.tipoSelecao] == "r"):
                     positionPais = self.selecaoDosPaisRoleta(listaFitness)
