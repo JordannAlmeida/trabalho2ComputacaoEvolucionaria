@@ -29,7 +29,7 @@ class Controlador:
         if (hasMapEscolhasUsuario[Constantes.numeroExecucao] >1 ):
             media = numpy.mean(resultados)
             desvio = numpy.std(resultados)
-            PlotaGrafico.plotarGrafico2d(numpy.arange(0, 100, 1), melhor, InterfaceUsuario.getTituloGrafico(hasMapEscolhasUsuario, media, desvio), "./fig/ensaio_" + hasMapEscolhasUsuario[Constantes.ensaio], "Execuções")
+            PlotaGrafico.plotarGrafico2d(numpy.arange(0, 100, 1), melhor, Controlador.getTituloGrafico(hasMapEscolhasUsuario, media, desvio), "./fig/ensaio_" + hasMapEscolhasUsuario[Constantes.ensaio], "Execuções")
 
     @staticmethod
     def getTituloGrafico (hasMapEscolhasUsuario, media, desvio):
