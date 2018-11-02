@@ -4,4 +4,4 @@ from interfaceUsuario import InterfaceUsuario
 
 #InterfaceUsuario.inputsUsuario()
 
-InterfaceUsuario.inputsUsuarioComParametros("u", "n", "r", "a", 10, 80, 40, 50)
+InterfaceUsuario.inputsUsuarioComParametros("u", "n", "r", "a", 10, 80, 50, 80)
