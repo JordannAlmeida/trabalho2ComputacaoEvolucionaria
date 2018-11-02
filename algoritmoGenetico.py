@@ -124,7 +124,7 @@ class AlgoritmoGenetico:
                 if aux[i]==0:
                     combinacaoFilho1.append(combinacaoPai1[i])
                     combinacaoFilho2.append(combinacaoPai2[i])
-                if aux[i]==1:
+                elif aux[i]==1:
                     combinacaoFilho1.append(combinacaoPai2[i])
                     combinacaoFilho2.append(combinacaoPai1[i])
                 i=i+1
@@ -143,9 +143,9 @@ class AlgoritmoGenetico:
             if r<taxaMutacao:        
                 if combinacaoFilho[i]==0:
                     combinacaoFilho[i]=1
-                if combinacaoFilho[i]==1:
+                elif combinacaoFilho[i]==1:
                     combinacaoFilho[i]=0
-            i=i+1
+                i=i+1
         filho.setCombinacao(combinacaoFilho)
         return filho
 
