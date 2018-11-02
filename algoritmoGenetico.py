@@ -94,15 +94,15 @@ class AlgoritmoGenetico:
             filhos="impossível, tamanho diferente"
         if tam1==tam2:
             cruz=random.randint(0,100)
-        if cruz<txCruzamento:
-            filho1=Individuo()
-            filho2=Individuo()
-            crossOver=random.randint(1,(tam1-2))
-            combinacaoFilho1=[*combinacaoPai1[:crossOver],*combinacaoPai2[crossOver:tam2]]
-            combinacaoFilho2=[*combinacaoPai2[:crossOver],*combinacaoPai1[crossOver:tam1]]
-            filho1.setCombinacao(combinacaoFilho1)
-            filho2.setCombinacao(combinacaoFilho2)
-            filhos=[filho1,filho2]
+            if cruz<txCruzamento:
+                filho1=Individuo()
+                filho2=Individuo()
+                crossOver=random.randint(1,(tam1-2))
+                combinacaoFilho1=[*combinacaoPai1[:crossOver],*combinacaoPai2[crossOver:tam2]]
+                combinacaoFilho2=[*combinacaoPai2[:crossOver],*combinacaoPai1[crossOver:tam1]]
+                filho1.setCombinacao(combinacaoFilho1)
+                filho2.setCombinacao(combinacaoFilho2)
+                filhos=[filho1,filho2]
         return filhos
 
     #Recebe um vetor de Individuos (pais) e um int
@@ -186,58 +186,65 @@ class AlgoritmoGenetico:
         self.melhorIndividuo = MetricasPopulacao.melhorIndividuoPopulacao(populacao)
         self.piorIndividuo = MetricasPopulacao.piorIndividuoPopulacao(populacao)
         filhos = [1,2]
+        newPopulacao=[]
         positionPais = []
         for i in range(0, int(hasMapEscolhasUsuario[Constantes.numeroGeracao])):
             populacao = MetricasPopulacao.rankearPopulacao(populacao)
             
             listaFitness = MetricasPopulacao.getListaFitness(populacao)
-            #Verificar metodo de selecao:
-            if(hasMapEscolhasUsuario[Constantes.tipoSelecao] == "r"):
-                positionPais = self.selecaoDosPaisRoleta(listaFitness)
-            else:
-                positionPais.append(self.selecaoDosPaisTorneio(listaFitness, 0.75))
-                positionPais.append(self.selecaoDosPaisTorneio(listaFitness, 0.75))
-            
-            pais = [populacao[positionPais[0]], populacao[positionPais[1]]]
-            
+            j=0
+
+            while j < (numeroIndividuos/2):
+                #Verificar metodo de selecao:
+                if(hasMapEscolhasUsuario[Constantes.tipoSelecao] == "r"):
+                    positionPais = self.selecaoDosPaisRoleta(listaFitness)
+                else:
+                    positionPais.append(self.selecaoDosPaisTorneio(listaFitness, 0.75))
+                    positionPais.append(self.selecaoDosPaisTorneio(listaFitness, 0.75))
+                
+                pais = [populacao[positionPais[0]], populacao[positionPais[1]]] 
             
 
-            #Verificar metodo de cruzamento:
-            if(hasMapEscolhasUsuario[Constantes.tipoCruzamento] == "p"):
-                filhos = self.cruzamentoUmPonto(pais, hasMapEscolhasUsuario[Constantes.taxaCruzamento])
-            else:
-                filhos = self.cruzamentoUniforme(pais, hasMapEscolhasUsuario[Constantes.taxaCruzamento])
+                #Verificar metodo de cruzamento:
+                if(hasMapEscolhasUsuario[Constantes.tipoCruzamento] == "p"):
+                    filhos = self.cruzamentoUmPonto(pais, hasMapEscolhasUsuario[Constantes.taxaCruzamento])
+                else:
+                    filhos = self.cruzamentoUniforme(pais, hasMapEscolhasUsuario[Constantes.taxaCruzamento])
             
-            #verifica tipo mutacao:
+                #verifica tipo mutacao:
+                
+                if(hasMapEscolhasUsuario[Constantes.tipoMutacao] == "a"):
+                    filhos[0] = self.mutacaoBitAleatorio(filhos[0], hasMapEscolhasUsuario[Constantes.taxaMutacao])
+                    filhos[1] = self.mutacaoBitAleatorio(filhos[1], hasMapEscolhasUsuario[Constantes.taxaMutacao])
+                else:
+                    filhos[0] = self.mutacaoBitABit(filhos[0], hasMapEscolhasUsuario[Constantes.taxaMutacao])
+                    filhos[1] = self.mutacaoBitABit(filhos[1], hasMapEscolhasUsuario[Constantes.taxaMutacao])
             
-            if(hasMapEscolhasUsuario[Constantes.tipoMutacao] == "a"):
-                filhos[0] = self.mutacaoBitAleatorio(filhos[0], hasMapEscolhasUsuario[Constantes.taxaMutacao])
-                filhos[1] = self.mutacaoBitAleatorio(filhos[1], hasMapEscolhasUsuario[Constantes.taxaMutacao])
-            else:
-                filhos[0] = self.mutacaoBitABit(filhos[0], hasMapEscolhasUsuario[Constantes.taxaMutacao])
-                filhos[1] = self.mutacaoBitABit(filhos[1], hasMapEscolhasUsuario[Constantes.taxaMutacao])
-            
-            #Verifica se tem Elitismo:
-            if hasMapEscolhasUsuario[Constantes.temElitismo] == "s":
-                elite = MetricasPopulacao.melhorIndividuoPopulacao(populacao)
-                #TODO: AJUSTARRR
-                if elite.getRank() != 1:
-                    populacao[elite.getRank()-1], populacao[0] = populacao[0], populacao[elite.getRank()-1]
-                    elite = populacao[0]
-                    print("EPAAAAAAAAAAAA!!!!!!!!!!!!!!!!!!!!!!!!!!\n")
-                    print(elite.getRank())
-                    print("\n")
-                position = random.randint(1, numeroIndividuos-1)
-                if filhos[0].getFitness() > elite.getFitness():
-                    populacao[position] = filhos[0]
-                if filhos[1].getFitness() > elite.getFitness():
-                    populacao[position] = filhos[1]
-            else:
-                position1 = random.randint(0, numeroIndividuos-1)
-                position2 = random.randint(0, numeroIndividuos-1)
-                populacao[position1] = filhos[0]
-                populacao[position2] = filhos[1]
-
+                #Verifica se tem Elitismo:
+                if hasMapEscolhasUsuario[Constantes.temElitismo] == "s":
+                    elite = MetricasPopulacao.melhorIndividuoPopulacao(populacao)
+                    #TODO: AJUSTARRR
+                    if elite.getRank() != 1:
+                        populacao[elite.getRank()-1], populacao[0] = populacao[0], populacao[elite.getRank()-1]
+                        elite = populacao[0]
+                        print("EPAAAAAAAAAAAA!!!!!!!!!!!!!!!!!!!!!!!!!!\n")
+                        print(elite.getRank())
+                        print("\n")
+                    position = random.randint(1, numeroIndividuos-1)
+                    if filhos[0].getFitness() > elite.getFitness():
+                        populacao[position] = filhos[0]
+                    if filhos[1].getFitness() > elite.getFitness():
+                        populacao[position] = filhos[1]
+                else:
+                    newPopulacao.append(filhos[0])
+                    newPopulacao.append(filhos[1])
+                j=j+1
+            populacao=newPopulacao
+                
+    # def atualizarPopulacao(self, filhos):
+    #     newPopulacao=filhos
+    #     return newPopulacao
+    
             #metricas
             self.melhorIndividuo = MetricasPopulacao.melhorIndividuoPopulacao(populacao)
             self.piorIndividuo = MetricasPopulacao.piorIndividuoPopulacao(populacao)
