@@ -83,19 +83,16 @@ class AlgoritmoGenetico:
         tam1=len(combinacaoPai1)
         tam2=len(combinacaoPai2)
         filhos=pais
-        if tam1!=tam2:
-            filhos="impossível, tamanho diferente"
-        if tam1==tam2:
-            cruz=random.randint(0,100)
-            if cruz<txCruzamento:
-                filho1=Individuo()
-                filho2=Individuo()
-                crossOver=random.randint(1,(tam1-2))
-                combinacaoFilho1=[*combinacaoPai1[:crossOver],*combinacaoPai2[crossOver:tam2]]
-                combinacaoFilho2=[*combinacaoPai2[:crossOver],*combinacaoPai1[crossOver:tam1]]
-                filho1.setCombinacao(combinacaoFilho1)
-                filho2.setCombinacao(combinacaoFilho2)
-                filhos=[filho1,filho2]
+        cruz=random.randint(0,100)
+        if cruz<txCruzamento:
+            filho1=Individuo()
+            filho2=Individuo()
+            crossOver=random.randint(1,(tam1-2))
+            combinacaoFilho1=[*combinacaoPai1[:crossOver],*combinacaoPai2[crossOver:tam2]]
+            combinacaoFilho2=[*combinacaoPai2[:crossOver],*combinacaoPai1[crossOver:tam1]]
+            filho1.setCombinacao(combinacaoFilho1)
+            filho2.setCombinacao(combinacaoFilho2)
+            filhos=[filho1,filho2]
         return filhos
 
     #Recebe um vetor de Individuos (pais) e um int
@@ -111,17 +108,11 @@ class AlgoritmoGenetico:
         filhos=pais
         i=0
         aux=[]
-
         #sorteio dos genes
         while i<tam1:
             aux.append(random.randint(0,1))
             i=i+1 
-
-        #geração dos filhos, com base nos genes sorteados
-        if tam1!=tam2:
-            filhos="impossível, tamanho diferente"
-        if tam1==tam2:
-            cruz=random.randint(0,100)
+        cruz=random.randint(0,100)
         if cruz<txCruzamento:
             i=0
             filho1=Individuo()
@@ -215,14 +206,7 @@ class AlgoritmoGenetico:
             
                 #Verifica se tem Elitismo:
                 if hasMapEscolhasUsuario[Constantes.temElitismo] == "s":
-                    elite = MetricasPopulacao.melhorIndividuoPopulacao(populacao)
-                    #TODO: AJUSTARRR
-                    if elite.getRank() != 1:
-                        populacao[elite.getRank()-1], populacao[0] = populacao[0], populacao[elite.getRank()-1]
-                        elite = populacao[0]
-                        print("EPAAAAAAAAAAAA!!!!!!!!!!!!!!!!!!!!!!!!!!\n")
-                        print(elite.getRank())
-                        print("\n")
+                    #TODO:
                     position = random.randint(1, numeroIndividuos-1)
                     if filhos[0].getFitness() > elite.getFitness():
                         populacao[position] = filhos[0]
