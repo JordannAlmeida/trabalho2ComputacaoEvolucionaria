@@ -61,23 +61,16 @@ class AlgoritmoGenetico:
     #Conferir esse método (não tenho certeza se é assim que ele funciona)
     #Dar uma olhada em: http://www.inf.ufpr.br/aurora/tutoriais/Ceapostila.pdf
     #página 10 fig. 4
-    def selecaoDosPaisTorneio(self, listaDeAvaliacao,k):
+    def selecaoDosPaisTorneio(self, listaDeAvaliacao):
         pos1=random.randint(0,len(listaDeAvaliacao)-1)
         pos2=random.randint(0,len(listaDeAvaliacao)-1)
         pai1=listaDeAvaliacao[pos1]
         pai2=listaDeAvaliacao[pos2]     
-        r=random.uniform(0,1)
         pais=[]
-        if r<k:
-            if pai1>pai2:
-                pais=pos1
-            if pai1<=pai2:
-                pais=pos2
-        if r>=k:
-            if pai1<pai2:
-                pais=pos1
-            if pai1>=pai2:
-                pais=pos2
+        if pai1>pai2:
+            pais=pos1
+        if pai1<=pai2:
+            pais=pos2
         return pais
 
     #Recebe um vetor de Individuos (pais) e um int
@@ -199,8 +192,8 @@ class AlgoritmoGenetico:
                 if(hasMapEscolhasUsuario[Constantes.tipoSelecao] == "r"):
                     positionPais = self.selecaoDosPaisRoleta(listaFitness)
                 else:
-                    positionPais.append(self.selecaoDosPaisTorneio(listaFitness, 0.75))
-                    positionPais.append(self.selecaoDosPaisTorneio(listaFitness, 0.75))
+                    positionPais.append(self.selecaoDosPaisTorneio(listaFitness))
+                    positionPais.append(self.selecaoDosPaisTorneio(listaFitness))
                 
                 pais = [populacao[positionPais[0]], populacao[positionPais[1]]] 
             
