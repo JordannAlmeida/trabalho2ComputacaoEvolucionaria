@@ -27,10 +27,10 @@ class Controlador:
             if (hasMapEscolhasUsuario[Constantes.numeroExecucao] <=1 ):
                 PlotaGrafico.plotarGrafico2d(numpy.arange(0, 50, 1), ag.getListaMelhoresFitness(), "teste")
         if (hasMapEscolhasUsuario[Constantes.numeroExecucao] >1 ):
-            media = numpy.mean(resultados)
-            desvio = numpy.std(resultados)
-            PlotaGrafico.plotarGrafico2d(numpy.arange(0, 100, 1), melhor, Controlador.getTituloGrafico(hasMapEscolhasUsuario, media, desvio), "./fig/ensaio_" + hasMapEscolhasUsuario[Constantes.ensaio], "Execuções")
+            media = numpy.mean(melhor)
+            desvio = numpy.std(melhor)
+            PlotaGrafico.plotarGrafico2d(numpy.arange(0, 100, 1), melhor, Controlador.getTituloGrafico(hasMapEscolhasUsuario, media, desvio, sucesso), "./fig/ensaio_" + hasMapEscolhasUsuario[Constantes.ensaio], "Execuções")
 
     @staticmethod
-    def getTituloGrafico (hasMapEscolhasUsuario, media, desvio):
-        return "Ensaio: " + hasMapEscolhasUsuario[Constantes.ensaio] + "\n" + "TC: " + hasMapEscolhasUsuario[Constantes.tipoCruzamento] + " E: " + hasMapEscolhasUsuario[Constantes.temElitismo] + "SL: " + hasMapEscolhasUsuario[Constantes.tipoSelecao] + " TM: " + hasMapEscolhasUsuario[Constantes.tipoMutacao] + " TxM: " + str(hasMapEscolhasUsuario[Constantes.taxaMutacao]) + " txC: " + str(hasMapEscolhasUsuario[Constantes.taxaCruzamento]) + " NI: " + str(hasMapEscolhasUsuario[Constantes.numeroIndividuos]) + " NG: " + str(hasMapEscolhasUsuario[Constantes.numeroGeracao]) + " nExec: " + str(hasMapEscolhasUsuario[Constantes.numeroExecucao]) + "\n" + "media: " + str(media) + " desvio: " + str(desvio)
+    def getTituloGrafico (hasMapEscolhasUsuario, media, desvio, sucesso):
+        return "Ensaio: " + hasMapEscolhasUsuario[Constantes.ensaio] + "\n" + "TC: " + hasMapEscolhasUsuario[Constantes.tipoCruzamento] + " E: " + hasMapEscolhasUsuario[Constantes.temElitismo] + "SL: " + hasMapEscolhasUsuario[Constantes.tipoSelecao] + " TM: " + hasMapEscolhasUsuario[Constantes.tipoMutacao] + " TxM: " + str(hasMapEscolhasUsuario[Constantes.taxaMutacao]) + " txC: " + str(hasMapEscolhasUsuario[Constantes.taxaCruzamento]) + " NI: " + str(hasMapEscolhasUsuario[Constantes.numeroIndividuos]) + " NG: " + str(hasMapEscolhasUsuario[Constantes.numeroGeracao]) + " nExec: " + str(hasMapEscolhasUsuario[Constantes.numeroExecucao]) + "\n" + "media: " + str(media) + " desvio: " + str(desvio) + " sucesso: " + str(sucesso)
